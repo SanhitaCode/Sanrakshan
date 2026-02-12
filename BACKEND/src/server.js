@@ -2,17 +2,24 @@ require("dotenv").config();
 
 const http = require("http");
 const socketIo = require("socket.io");
+const cors = require("cors"); // 👈 added
 
 const app = require("./app");
 
-// Add CORS for Express routes (if not already in app.js)
-const cors = require("cors");
+// -------------------------------------------------------------
+// 1. CORS for Express routes – allow your live frontend
+// -------------------------------------------------------------
 app.use(cors({
-  origin: ["https://sanrakshan.netlify.app", "http://localhost:5500"],
+  origin: [
+    "https://sanrakshan.netlify.app",     // your Netlify frontend
+    "http://localhost:5500"               // local dev (optional)
+  ],
   credentials: true
 }));
 
-// Test endpoint
+// -------------------------------------------------------------
+// 2. TEST ENDPOINT – confirms backend is reachable
+// -------------------------------------------------------------
 app.get("/api/test", (req, res) => {
   res.json({ 
     success: true, 
@@ -21,12 +28,25 @@ app.get("/api/test", (req, res) => {
   });
 });
 
+// -------------------------------------------------------------
+// 3. Your real API routes – add these when your router files exist
+//    Example (uncomment when ready):
+// 
+// const authRouter = require("./routes/auth");
+// const alertsRouter = require("./routes/alerts");
+// const sosRouter = require("./routes/sos");
+// 
+// app.use("/api/auth", authRouter);
+// app.use("/api/alerts", alertsRouter);
+// app.use("/api/sos", sosRouter);
+// -------------------------------------------------------------
+
 // Create HTTP server
 const server = http.createServer(app);
 
 // Attach socket.io
 const io = socketIo(server, {
-  cors: { origin: "*" }
+  cors: { origin: "*" } // Socket.IO CORS (already permissive)
 });
 
 io.on("connection", (socket) => {
@@ -36,6 +56,8 @@ io.on("connection", (socket) => {
 // Make io available inside controllers
 app.set("io", io);
 
-server.listen(process.env.PORT || 5000, () => {
-  console.log("Server running on port 5000");
+// Start server
+const PORT = process.env.PORT || 5000;
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
