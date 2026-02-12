@@ -1,0 +1,2551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sanrakshan · AR Alertness & Auto‑Admin</title>
+    <!-- Font Awesome 6 (free) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts: Inter + Space Grotesk -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.5;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        :root {
+            --alert-red: #d62828;
+            --alert-red-dark: #b31c1c;
+            --sos-red: #e63946;
+            --ar-teal: #1e6091;
+            --ar-teal-light: #2a9d8f;
+            --admin-gold: #e9c46a;
+            --admin-gold-dark: #d4ac0d;
+            --navy: #003049;
+            --night: #0b1c2c;
+            --light-gray: #edf2f7;
+            --card-white: #ffffff;
+            --shadow: 0 15px 35px -10px rgba(0,0,0,0.08);
+            --success-green: #2e7d32;
+            --error-red: #c62828;
+            
+            /* Light Mode Colors */
+            --bg-primary: #fcf9f7;
+            --bg-secondary: #ffffff;
+            --text-primary: #1e1e2a;
+            --text-secondary: #555;
+            --border-color: #e0e8ef;
+            --card-shadow: 0 15px 35px -10px rgba(0,0,0,0.08);
+        }
+        
+        /* Dark Mode */
+        html.dark-mode {
+            --bg-primary: #0f1419;
+            --bg-secondary: #1a1f2e;
+            --text-primary: #e8eaed;
+            --text-secondary: #a8abb5;
+            --border-color: #2d3139;
+            --card-shadow: 0 15px 35px -10px rgba(0,0,0,0.5);
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 32px;
+        }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 22px 0 18px;
+            border-bottom: 3px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .logo-frame {
+            width: 80px;
+            height: 80px;
+            background: transparent;
+            border-radius: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 12px 18px -6px #001d3d60;
+            border: 2px solid #e9c46a;
+            overflow: hidden;
+            padding: 0;
+        }
+
+        .custom-logo-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+            background-color: #0a3144;
+            scale: 1.2;
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-text h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+            line-height: 1.1;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .tagline {
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--ar-teal);
+            border-left: 4px solid var(--alert-red);
+            padding-left: 12px;
+            margin-top: 2px;
+            font-family: 'Space Grotesk', sans-serif;
+            word-spacing: 6px;
+        }
+
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 16px;
+            border-radius: 50px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .theme-toggle:hover {
+            border-color: var(--ar-teal);
+            box-shadow: 0 4px 12px rgba(42, 157, 143, 0.2);
+        }
+        
+        .theme-toggle i {
+            font-size: 1.3rem;
+        }
+
+        /* Dark Mode Styles for Hero Section */
+        html.dark-mode .hero-badge {
+            background: rgba(42, 157, 143, 0.15);
+            color: #5dd9ce;
+            border-color: rgba(42, 157, 143, 0.4);
+        }
+        
+        html.dark-mode .hero h2 {
+            color: #e8eaed;
+        }
+        
+        html.dark-mode .ar-package {
+            background: linear-gradient(to right, rgba(30, 96, 145, 0.2), rgba(42, 157, 143, 0.1));
+            border-left-color: #5dd9ce;
+        }
+        
+        html.dark-mode .ar-desc h3,
+        html.dark-mode .ar-desc p {
+            color: var(--text-primary);
+        }
+        
+        html.dark-mode .feature-tag span {
+            background: var(--bg-secondary);
+            color: #5dd9ce;
+            border-color: #2a9d8f;
+        }
+        
+        /* Dark Mode Styles for Admin Card */
+        html.dark-mode .admin-approval-card {
+            background: linear-gradient(to right, rgba(233, 196, 106, 0.1), rgba(233, 196, 106, 0.05));
+            border-color: #5a4a1a;
+            box-shadow: 0 20px 30px -8px rgba(0, 0, 0, 0.5);
+        }
+        
+        html.dark-mode .admin-text h4,
+        html.dark-mode .admin-text p {
+            color: var(--text-primary);
+        }
+        
+        /* Dark Mode Styles for SOS Section */
+        html.dark-mode .sos-card {
+            background: linear-gradient(165deg, rgba(230, 57, 70, 0.15), rgba(230, 57, 70, 0.1));
+            border-color: #5a2a2a;
+            box-shadow: 0 12px 0 #5a1a1a, 0 10px 25px rgba(230, 57, 70, 0.2);
+        }
+        
+        html.dark-mode .sos-warning {
+            color: #ff9999;
+            border-left-color: #ff6b6b;
+        }
+        
+        /* Dark Mode Styles for Alertness Feed */
+        html.dark-mode .alertness-feed {
+            background: var(--bg-secondary);
+            border-top-color: #ff6b6b;
+        }
+        
+        html.dark-mode .feed-header h3 {
+            color: var(--text-primary);
+        }
+        
+        html.dark-mode .automated-tag {
+            background: rgba(42, 157, 143, 0.2);
+            color: #5dd9ce;
+            border-color: #2a7a6f;
+        }
+        
+        html.dark-mode .alert-card {
+            background: #1a1f2e;
+            border-left-color: #555;
+        }
+        
+        html.dark-mode .alert-card.approved {
+            background: linear-gradient(to right, rgba(46, 125, 50, 0.2), rgba(46, 125, 50, 0.1));
+            border-left-color: #66bb6a;
+            box-shadow: 0 4px 10px rgba(102, 187, 106, 0.15);
+        }
+        
+        html.dark-mode .alert-meta h4,
+        html.dark-mode .alert-meta p {
+            color: var(--text-primary);
+        }
+        
+        html.dark-mode .alert-meta p {
+            color: var(--text-secondary);
+        }
+        
+        html.dark-mode .demo-note {
+            background: rgba(30, 96, 145, 0.15);
+            color: #5dd9ce;
+            border-color: #2a7a6f;
+        }
+        
+        html.dark-mode .sos-mini {
+            background-color: rgba(230, 57, 70, 0.15);
+            border-color: #5a2a2a;
+        }
+        
+        html.dark-mode footer {
+            color: var(--text-secondary);
+            border-top-color: var(--border-color);
+        }
+
+        .login-section {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        .login-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            transition: 0.2s ease;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 6px 0 rgba(0,0,0,0.1);
+            text-decoration: none;
+        }
+
+        .login-btn i {
+            font-size: 1.2rem;
+        }
+
+        .user-login {
+            background: #1e6091;
+            color: white;
+            box-shadow: 0 6px 0 #0d3a55;
+            border: 1px solid #a8e6ff;
+        }
+
+        .user-login:hover {
+            background: #1a4f77;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 0 #0d3a55;
+        }
+
+        .admin-login {
+            background: #e9c46a;
+            color: #3b280b;
+            box-shadow: 0 6px 0 #b68b2b;
+            border: 1px solid #ffe49c;
+        }
+
+        .admin-login:hover {
+            background: #d4ac0d;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 0 #8b6b1f;
+        }
+
+        .sos-mini {
+            background-color: #fff1f0;
+            padding: 12px 20px;
+            border-radius: 100px;
+            border: 1.5px solid #ffcdb2;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sos-mini i {
+            color: var(--sos-red);
+            font-size: 1.5rem;
+        }
+
+        .sos-mini .btn-sos-small {
+            background: var(--sos-red);
+            color: white;
+            border: none;
+            font-weight: 700;
+            padding: 10px 22px;
+            border-radius: 40px;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            box-shadow: 0 6px 0 #921212;
+            transition: 0.1s ease;
+            cursor: pointer;
+            border: 1px solid white;
+        }
+
+        .sos-mini .btn-sos-small:active {
+            transform: translateY(6px);
+            box-shadow: 0 1px 0 #921212;
+        }
+
+        .hero {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            margin: 50px 0 30px;
+            align-items: center;
+        }
+
+        .hero-content {
+            flex: 1 1 380px;
+        }
+
+        .hero-badge {
+            background: #00304922;
+            color: var(--navy);
+            display: inline-block;
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            border: 1px solid #2a9d8f44;
+            backdrop-filter: blur(2px);
+            margin-bottom: 20px;
+        }
+
+        .hero h2 {
+            font-size: 2.7rem;
+            font-weight: 800;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+            color: #0b2b3b;
+            margin-bottom: 24px;
+        }
+
+        .hero h2 i {
+            color: var(--ar-teal);
+            font-size: 2.5rem;
+            margin-right: 8px;
+        }
+
+        .ar-package {
+            background: linear-gradient(to right, #f0f9ff, #e6f2f9);
+            border-left: 8px solid var(--ar-teal);
+            border-radius: 24px;
+            padding: 28px 32px;
+            margin: 30px 0 25px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .ar-icon {
+            background: var(--navy);
+            width: 70px;
+            height: 70px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.2rem;
+        }
+
+        .ar-desc {
+            flex: 1;
+        }
+
+        .ar-desc h3 {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: #0a445b;
+        }
+
+        .ar-desc p {
+            font-size: 1.1rem;
+            color: #1f506a;
+            font-weight: 500;
+        }
+
+        .feature-tag {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .feature-tag span {
+            background: white;
+            padding: 6px 20px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--navy);
+            border: 1px solid var(--ar-teal-light);
+            box-shadow: 0 2px 6px #0000000a;
+        }
+
+        .admin-approval-card {
+            background: #fefae0;
+            border-radius: 28px;
+            padding: 28px 32px;
+            border: 2px solid var(--admin-gold);
+            box-shadow: 0 20px 30px -8px #ca8a0430;
+            margin: 40px 0 20px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .admin-left {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+        }
+
+        .admin-icon {
+            width: 60px;
+            height: 60px;
+            background: transparent;
+            border-radius: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            border: 2px solid #e9c46a;
+            box-shadow: 0 8px 12px -4px #3b280b40;
+        }
+
+        .admin-logo-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+            background-color: #5a3516;
+            scale: 1.1;
+        }
+
+        .admin-text h4 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #3b280b;
+        }
+
+        .admin-text p {
+            font-size: 1rem;
+            color: #6b4a1b;
+            font-weight: 500;
+        }
+
+        .automated-badge {
+            background: #2a5c4a;
+            padding: 12px 24px;
+            border-radius: 50px;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+
+        .sos-section {
+            display: flex;
+            justify-content: center;
+            margin: 35px 0 40px;
+        }
+
+        .sos-card {
+            background: linear-gradient(165deg, #fff4f2, #ffe9e7);
+            border-radius: 48px;
+            padding: 20px 40px;
+            border: 3px solid #fca5a5;
+            box-shadow: 0 12px 0 #b91c1c;
+            display: inline-flex;
+            align-items: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn-sos-main {
+            background: var(--sos-red);
+            border: none;
+            color: white;
+            font-size: 2rem;
+            font-weight: 800;
+            padding: 22px 50px;
+            border-radius: 60px;
+            letter-spacing: 6px;
+            box-shadow: 0 12px 0 #921212, 0 10px 25px #e6394690;
+            transition: 0.08s linear;
+            cursor: pointer;
+            border: 2px solid white;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .btn-sos-main i {
+            font-size: 2.5rem;
+            filter: drop-shadow(2px 4px 2px #330000);
+        }
+
+        .btn-sos-main:active {
+            transform: translateY(12px);
+            box-shadow: 0 2px 0 #921212, 0 15px 30px #e6394690;
+        }
+
+        .sos-warning {
+            color: #7f1d1d;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border-left: 3px solid var(--alert-red);
+            padding-left: 18px;
+        }
+
+        .dev-status {
+            display: inline-block;
+            background: #1c1c1c;
+            color: #ffbaba;
+            padding: 8px 22px;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .alertness-feed {
+            background: white;
+            border-radius: 32px;
+            padding: 32px;
+            margin: 50px 0 40px;
+            box-shadow: var(--shadow);
+            border-top: 6px solid var(--alert-red);
+        }
+
+        .feed-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
+        }
+
+        .feed-header h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--night);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .automated-tag {
+            background: #00a89622;
+            color: #025f5a;
+            padding: 8px 22px;
+            border-radius: 40px;
+            font-weight: 700;
+            border: 1px dashed #0f8b8d;
+        }
+
+        .alert-card {
+            background: #f8fcff;
+            border-radius: 20px;
+            padding: 22px 28px;
+            margin-bottom: 18px;
+            border-left: 10px solid #bebebe;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            transition: 0.2s;
+            border-left-color: #b0b0b0;
+        }
+
+        .alert-card.approved {
+            background: linear-gradient(to right, #e6f7e6, #f0fff0);
+            border-left-color: #2e7d32;
+            box-shadow: 0 4px 10px #1e5f1e20;
+        }
+
+        .alert-info {
+            display: flex;
+            gap: 18px;
+            align-items: center;
+        }
+
+        .alert-icon {
+            font-size: 1.8rem;
+        }
+
+        .alert-meta h4 {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .alert-meta p {
+            color: #3d5a73;
+        }
+
+        .approval-stamp {
+            background: #2e7d32;
+            color: white;
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9rem;
+        }
+
+        .demo-note {
+            background: #f1f9fc;
+            padding: 18px 28px;
+            border-radius: 16px;
+            margin: 16px 0 10px;
+            color: #035c7c;
+            font-weight: 500;
+            border: 1px solid #79c2d6;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 0 30px;
+            color: #4f6f7f;
+            border-top: 1px solid #cbd5e1;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 800px) {
+            .navbar { 
+                flex-direction: column; 
+                align-items: stretch; 
+            }
+            .logo-area {
+                justify-content: center;
+            }
+            .login-section {
+                justify-content: center;
+            }
+            .hero h2 { font-size: 2rem; }
+        }
+
+        /* Login Pages Styling */
+        .login-page {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 48, 73, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        html.dark-mode .login-page {
+            background: rgba(15, 20, 25, 0.98);
+        }
+
+        .login-page:target {
+            display: flex;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 32px;
+            padding: 48px;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            border: 3px solid var(--admin-gold);
+            position: relative;
+        }
+
+        html.dark-mode .login-container {
+            background: var(--bg-secondary);
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+        }
+
+        .login-container h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--night);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        html.dark-mode .login-container h2 {
+            color: var(--text-primary);
+        }
+
+        .login-container p {
+            color: #4a5568;
+            margin-bottom: 32px;
+            font-size: 1.1rem;
+        }
+
+        html.dark-mode .login-container p {
+            color: var(--text-secondary);
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--night);
+            margin-bottom: 8px;
+        }
+
+        html.dark-mode .form-group label {
+            color: var(--text-primary);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            font-size: 1rem;
+            transition: 0.2s;
+            background: white;
+            color: #1e1e2a;
+            cursor: text;
+        }
+
+        html.dark-mode .form-group input {
+            background: #252c3a;
+            border-color: #3d4556;
+            color: var(--text-primary);
+        }
+
+        .form-group input:focus {
+            border-color: var(--ar-teal);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(30, 96, 145, 0.1);
+        }
+
+        html.dark-mode .form-group input:focus {
+            box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.15);
+        }
+
+        .login-submit {
+            background: var(--ar-teal);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            width: 100%;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #0d3a55;
+            transition: 0.1s ease;
+            margin-top: 16px;
+        }
+
+        .login-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 0 #0d3a55;
+        }
+
+        .login-submit:active {
+            transform: translateY(6px);
+            box-shadow: 0 2px 0 #0d3a55;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            background: #edf2f7;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--night);
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        html.dark-mode .close-btn {
+            background: #3d4556;
+            color: var(--text-primary);
+        }
+
+        .close-btn:hover {
+            background: #e2e8f0;
+            transform: rotate(90deg);
+        }
+
+        html.dark-mode .close-btn:hover {
+            background: #4a5270;
+        }
+
+        .admin-container {
+            border-color: var(--admin-gold-dark);
+        }
+
+        .admin-container h2 {
+            color: #5a3516;
+        }
+
+        .admin-container .login-submit {
+            background: #e9c46a;
+            color: #3b280b;
+            box-shadow: 0 6px 0 #b68b2b;
+        }
+
+        .admin-container .login-submit:hover {
+            background: #d4ac0d;
+            color: white;
+        }
+
+        .back-home {
+            display: inline-block;
+            margin-top: 24px;
+            color: var(--ar-teal);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-home:hover {
+            text-decoration: underline;
+        }
+
+        /* ---------- DETAILED CASE STUDIES PAGE - FIXED BACK BUTTON ---------- */
+        .case-studies-page {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(145deg, #edf2fb, #e2eafc);
+            z-index: 2000;
+            overflow-y: auto;
+            padding: 40px 20px;
+        }
+
+        .case-studies-page:target {
+            display: block;
+        }
+
+        .case-studies-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 48px 48px 32px 32px;
+            padding: 40px 48px;
+            box-shadow: 0 30px 50px -15px #0b2b3b40;
+            border-left: 8px solid var(--ar-teal-light);
+            border-right: 8px solid var(--admin-gold);
+            position: relative;
+        }
+
+        html.dark-mode .case-container {
+            background: var(--bg-secondary);
+            box-shadow: 0 30px 50px -15px rgba(0, 0, 0, 0.5);
+        }
+
+        .case-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+        }
+
+        .case-header h2 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--night);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        html.dark-mode .case-header h2 {
+            color: var(--text-primary);
+        }
+
+        /* REDESIGNED BACK BUTTON - Elegant and professional */
+        .back-home-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(145deg, var(--ar-teal), #0d4a6e);
+            color: white;
+            padding: 16px 36px;
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            text-decoration: none;
+            transition: 0.2s;
+            border: 2px solid white;
+            box-shadow: 0 10px 0 #0a3144, 0 10px 25px rgba(0,48,73,0.3);
+            letter-spacing: 1px;
+        }
+
+        .back-home-btn i {
+            font-size: 1.3rem;
+            transition: transform 0.2s;
+        }
+
+        .back-home-btn:hover {
+            background: linear-gradient(145deg, #0d4a6e, var(--ar-teal));
+            transform: translateY(-3px);
+            box-shadow: 0 13px 0 #0a3144, 0 15px 30px rgba(0,48,73,0.4);
+        }
+
+        .back-home-btn:hover i {
+            transform: translateX(-5px);
+        }
+
+        .back-home-btn:active {
+            transform: translateY(10px);
+            box-shadow: 0 3px 0 #0a3144, 0 15px 30px rgba(0,48,73,0.4);
+        }
+
+        /* Close case button - keep original but enhance */
+        .close-case {
+            background: var(--night);
+            color: white;
+            width: 54px;
+            height: 54px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            text-decoration: none;
+            transition: 0.2s;
+            box-shadow: 0 6px 0 #02111b;
+        }
+
+        .close-case:hover {
+            background: #0f4b5e;
+            transform: scale(0.95);
+        }
+
+        /* Detailed case study cards */
+        .detailed-case-card {
+            background: #f8fdff;
+            border-radius: 28px;
+            padding: 32px;
+            margin-bottom: 32px;
+            border-left: 8px solid var(--ar-teal);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+            transition: 0.2s;
+        }
+
+        html.dark-mode .detailed-case-card {
+            background: #1a1f2e;
+            border-left-color: #5dd9ce;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .detailed-case-card:hover {
+            border-left-color: var(--sos-red);
+            background: white;
+        }
+
+        html.dark-mode .detailed-case-card:hover {
+            border-left-color: #ff6b6b;
+            background: #252c3a;
+        }
+
+        .detailed-case-card h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1d4f6e;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 2px solid var(--admin-gold);
+            padding-bottom: 12px;
+        }
+
+        .detailed-case-card h3 i {
+            color: var(--alert-red);
+        }
+
+        .case-section {
+            margin-bottom: 20px;
+        }
+
+        .case-section h4 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .case-section h4 i {
+            color: var(--ar-teal);
+        }
+
+        .case-section p {
+            color: #2e3f4e;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 12px;
+            padding-left: 16px;
+            border-left: 3px solid var(--ar-teal-light);
+        }
+
+        .case-section ul {
+            list-style: none;
+            padding-left: 20px;
+        }
+
+        .case-section li {
+            margin-bottom: 10px;
+            padding-left: 28px;
+            position: relative;
+            font-size: 1.05rem;
+        }
+
+        .case-section li:before {
+            font-family: "Font Awesome 6 Free";
+            content: "\f058";
+            font-weight: 900;
+            color: var(--ar-teal);
+            position: absolute;
+            left: 0;
+        }
+
+        .impact-badge {
+            display: inline-block;
+            background: #e6f7e6;
+            color: #2e7d32;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            margin-top: 12px;
+            border-left: 4px solid #2e7d32;
+        }
+
+        /* ---------- INTERACTIVE QUIZ PAGE - COMPLETE OVERHAUL ---------- */
+        .quiz-page {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(145deg, #edf2fb, #e2eafc);
+            z-index: 2000;
+            overflow-y: auto;
+            padding: 40px 20px;
+        }
+
+        .quiz-page:target {
+            display: block;
+        }
+
+        .quiz-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 48px 48px 32px 32px;
+            padding: 40px 48px;
+            box-shadow: 0 30px 50px -15px #0b2b3b40;
+            border-left: 8px solid var(--ar-teal-light);
+            border-right: 8px solid var(--admin-gold);
+            position: relative;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+        }
+
+        .quiz-header h2 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--night);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .close-quiz {
+            background: var(--night);
+            color: white;
+            width: 54px;
+            height: 54px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            text-decoration: none;
+            transition: 0.2s;
+            box-shadow: 0 6px 0 #02111b;
+        }
+
+        .close-quiz:hover {
+            background: #0f4b5e;
+            transform: scale(0.95);
+        }
+
+        .quiz-progress {
+            background: linear-gradient(115deg, #fff9e6, #fdf6e0);
+            border-radius: 50px;
+            padding: 16px 28px;
+            margin-bottom: 32px;
+            border: 2px dashed var(--admin-gold-dark);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .quiz-progress span {
+            font-weight: 700;
+            color: var(--navy);
+            font-size: 1.1rem;
+        }
+
+        .quiz-questions-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .quiz-card {
+            background: #f8fdff;
+            border-radius: 24px;
+            padding: 28px;
+            border-left: 7px solid var(--ar-teal);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            transition: 0.2s;
+        }
+
+        .quiz-card.submitted-correct {
+            border-left: 7px solid var(--success-green);
+            background: linear-gradient(to right, #f0fff4, #f8fdff);
+        }
+
+        .quiz-card.submitted-wrong {
+            border-left: 7px solid var(--error-red);
+            background: linear-gradient(to right, #fff0f0, #f8fdff);
+        }
+
+        .quiz-card p {
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: var(--navy);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quiz-card p i {
+            color: var(--alert-red);
+        }
+
+        .quiz-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 12px;
+        }
+
+        .quiz-option-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 18px;
+            background: #f1f6fa;
+            border-radius: 18px;
+            cursor: pointer;
+            transition: 0.1s;
+            border: 2px solid transparent;
+            position: relative;
+        }
+
+        .quiz-option-item:hover {
+            background: #ffe5d9;
+            border: 2px solid var(--alert-red);
+        }
+
+        .quiz-option-item input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--ar-teal);
+        }
+
+        /* Correct/Incorrect icons */
+        .result-icon {
+            margin-left: auto;
+            font-size: 1.2rem;
+        }
+
+        .result-icon.correct {
+            color: var(--success-green);
+        }
+
+        .result-icon.wrong {
+            color: var(--error-red);
+        }
+
+        .btn-quiz-submit-large {
+            background: var(--ar-teal-light);
+            border: none;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 700;
+            padding: 20px 60px;
+            border-radius: 60px;
+            letter-spacing: 2px;
+            box-shadow: 0 10px 0 #166353;
+            cursor: pointer;
+            transition: 0.08s;
+            border: 2px solid white;
+            margin: 30px auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .btn-quiz-submit-large:active {
+            transform: translateY(10px);
+            box-shadow: 0 2px 0 #166353;
+        }
+
+        .quiz-feedback-large {
+            margin-top: 30px;
+            margin-bottom: 30px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            padding: 22px 36px;
+            border-radius: 60px;
+            background: #e6f7e6;
+            border-left: 8px solid #2e7d32;
+            display: block;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* Back to Home button for quiz */
+        .quiz-back-home {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .quiz-back-home .back-home-btn {
+            background: linear-gradient(145deg, var(--admin-gold-dark), #b68b2b);
+            box-shadow: 0 10px 0 #7a611f;
+        }
+
+        .quiz-back-home .back-home-btn:hover {
+            background: linear-gradient(145deg, #b68b2b, var(--admin-gold-dark));
+            box-shadow: 0 13px 0 #7a611f;
+        }
+
+        /* Educational Preparedness section */
+        .edu-preparedness {
+            background: linear-gradient(125deg, #e2eaf1, #d3e3ed);
+            border-radius: 48px;
+            padding: 32px 40px;
+            margin: 30px 0;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .edu-left {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .edu-icon {
+            font-size: 3.5rem;
+            color: #144a5e;
+        }
+
+        .edu-text h4 {
+            font-weight: 700;
+            font-size: 1.7rem;
+            color: #001d26;
+            margin-bottom: 8px;
+        }
+
+        .edu-text p {
+            font-size: 1.15rem;
+            max-width: 550px;
+            color: #1d4f5e;
+        }
+
+        .edu-actions {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .edu-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 32px;
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            text-decoration: none;
+            transition: 0.2s;
+            border: 2px solid transparent;
+            box-shadow: 0 8px 0 rgba(0,0,0,0.1);
+        }
+
+        .edu-btn i {
+            font-size: 1.3rem;
+        }
+
+        .edu-btn.case {
+            background: var(--ar-teal);
+            color: white;
+            box-shadow: 0 8px 0 #0d3a55;
+        }
+
+        .edu-btn.case:hover {
+            background: #1a4f77;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 0 #0d3a55;
+        }
+
+        .edu-btn.quiz {
+            background: var(--admin-gold);
+            color: #3b280b;
+            box-shadow: 0 8px 0 #b68b2b;
+        }
+
+        .edu-btn.quiz:hover {
+            background: #d4ac0d;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 0 #8b6b1f;
+        }
+
+        .edu-btn:active {
+            transform: translateY(8px);
+            box-shadow: 0 2px 0 #0d3a55;
+        }
+
+        .edu-btn.quiz:active {
+            box-shadow: 0 2px 0 #8b6b1f;
+        }
+
+        .dev-badge {
+            display: inline-block;
+            background: #1c1c1c;
+            color: #ffbaba;
+            padding: 6px 18px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-left: 15px;
+        }
+
+        /* Font Awesome icons for numbers 10-20 */
+        .fa-10:before { content: "1"; font-family: 'Inter'; font-weight: 700; margin-right: 2px; } .fa-10:after { content: "0"; font-family: 'Inter'; font-weight: 700; }
+        .fa-11:before { content: "1"; font-family: 'Inter'; font-weight: 700; margin-right: 2px; } .fa-11:after { content: "1"; font-family: 'Inter'; font-weight: 700; }
+        .fa-12:before { content: "1"; font-family: 'Inter'; font-weight: 700; margin-right: 2px; } .fa-12:after { content: "2"; font-family: 'Inter'; font-weight: 700; }
+        .fa-13:before { content: "1"; font-family: 'Inter'; font-weight: 700; margin-right: 2px; } .fa-13:after { content: "3"; font-family: 'Inter'; font-weight: 700; }
+        .fa-14:before { content: "1"; font-family: 'Inter'; font-weight: 700; margin-right: 2px; } .fa-14:after { content: "4"; font-family: 'Inter'; font-weight: 700; }
+        .fa-15:before { content: "1"; font-family: 'Inter'; font-weight: 700; margin-right: 2px; } .fa-15:after { content: "5"; font-family: 'Inter'; font-weight: 700; }
+        .fa-16:before { content: "1"; font-family: 'Inter'; font-weight: 700; margin-right: 2px; } .fa-16:after { content: "6"; font-family: 'Inter'; font-weight: 700; }
+        .fa-17:before { content: "1"; font-family: 'Inter'; font-weight: 700; margin-right: 2px; } .fa-17:after { content: "7"; font-family: 'Inter'; font-weight: 700; }
+        .fa-18:before { content: "1"; font-family: 'Inter'; font-weight: 700; margin-right: 2px; } .fa-18:after { content: "8"; font-family: 'Inter'; font-weight: 700; }
+        .fa-19:before { content: "1"; font-family: 'Inter'; font-weight: 700; margin-right: 2px; } .fa-19:after { content: "9"; font-family: 'Inter'; font-weight: 700; }
+        .fa-20:before { content: "2"; font-family: 'Inter'; font-weight: 700; margin-right: 2px; } .fa-20:after { content: "0"; font-family: 'Inter'; font-weight: 700; }
+    </style>
+</head>
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/modals.js"></script>
+<script src="js/sos.js"></script>
+<script src="js/alerts.js"></script>
+
+<script>
+    // Theme Toggle Functionality
+    function initTheme() {
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        if (savedTheme === 'dark') {
+            document.documentElement.classList.add('dark-mode');
+            updateThemeButton(true);
+        }
+    }
+    
+    function toggleTheme() {
+        const isDarkMode = document.documentElement.classList.toggle('dark-mode');
+        localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+        updateThemeButton(isDarkMode);
+    }
+    
+    function updateThemeButton(isDarkMode) {
+        const icon = document.getElementById('theme-icon');
+        const text = document.getElementById('theme-text');
+        if (isDarkMode) {
+            icon.classList.remove('fa-moon');
+            icon.classList.add('fa-sun');
+            text.textContent = 'Light';
+        } else {
+            icon.classList.remove('fa-sun');
+            icon.classList.add('fa-moon');
+            text.textContent = 'Dark';
+        }
+    }
+    
+    // Initialize theme on page load
+    initTheme();
+</script>
+
+<body>
+
+    <!-- User Login Page Modal -->
+    <div id="user-login-page" class="login-page">
+        <div class="login-container">
+            <a href="#" class="close-btn"><i class="fas fa-times"></i></a>
+            <h2><i class="fas fa-user" style="color: var(--ar-teal);"></i> User Login</h2>
+            <p>Access your Sanrakshan dashboard for personalized AR alerts and preparedness tools.</p>
+            <form>
+                <div class="form-group">
+                    <label><i class="fas fa-envelope"></i> Email or Phone</label>
+                    <input type="text" placeholder="Enter your email or phone number" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> Password</label>
+                    <input type="password" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="login-submit">Sign In <i class="fas fa-arrow-right"></i></button>
+            </form>
+            <div style="display: flex; justify-content: space-between; margin-top: 24px;">
+                <a href="#" style="color: var(--ar-teal); text-decoration: none;">Forgot password?</a>
+                <a href="#user-register-page" style="color: var(--ar-teal); text-decoration: none;">Create account</a>
+            </div>
+            <a href="#" class="back-home"><i class="fas fa-arrow-left"></i> Back to Home</a>
+        </div>
+    </div>
+
+    <!-- User Registration Page Modal -->
+    <div id="user-register-page" class="login-page">
+        <div class="login-container">
+            <a href="#" class="close-btn"><i class="fas fa-times"></i></a>
+            <h2><i class="fas fa-user-plus" style="color: var(--ar-teal);"></i> Create Account</h2>
+            <p>Join Sanrakshan to receive personalized AR alerts and emergency preparedness tools.</p>
+            <form>
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> Full Name</label>
+                    <input type="text" placeholder="Enter your full name" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-envelope"></i> Email Address</label>
+                    <input type="email" placeholder="Enter your email address" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> Password</label>
+                    <input type="password" placeholder="Create a strong password" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock-open"></i> Confirm Password</label>
+                    <input type="password" placeholder="Confirm your password" required>
+                </div>
+                <button type="submit" class="login-submit">Create Account <i class="fas fa-arrow-right"></i></button>
+            </form>
+            <div style="display: flex; justify-content: center; margin-top: 24px;">
+                <span style="color: #666; margin-right: 8px;">Already have an account?</span>
+                <a href="#user-login-page" style="color: var(--ar-teal); text-decoration: none; font-weight: 600;">Sign in</a>
+            </div>
+            <a href="#" class="back-home"><i class="fas fa-arrow-left"></i> Back to Home</a>
+        </div>
+    </div>
+
+    <!-- Admin Login Page Modal -->
+    <div id="admin-login-page" class="login-page">
+        <div class="login-container admin-container">
+            <a href="#" class="close-btn"><i class="fas fa-times"></i></a>
+            <h2><i class="fas fa-shield-halos" style="color: #e9c46a;"></i> Admin Login</h2>
+            <p>Secure access for emergency administrators and auto‑admin system managers.</p>
+            <form>
+                <div class="form-group">
+                    <label><i class="fas fa-id-card"></i> Admin ID</label>
+                    <input type="text" placeholder="Enter your admin ID" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-key"></i> Security Key</label>
+                    <input type="password" placeholder="Enter your security key" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-shield"></i> 2FA Code</label>
+                    <input type="text" placeholder="Enter authentication code" required>
+                </div>
+                <button type="submit" class="login-submit">Access Admin Panel <i class="fas fa-arrow-right"></i></button>
+            </form>
+            <div style="display: flex; justify-content: space-between; margin-top: 24px;">
+                <a href="#" style="color: #b68b2b; text-decoration: none;">Reset security key</a>
+                <a href="#" style="color: #b68b2b; text-decoration: none;">Contact super admin</a>
+            </div>
+            <a href="#" class="back-home"><i class="fas fa-arrow-left"></i> Back to Home</a>
+        </div>
+    </div>
+
+    <!-- ========== DETAILED CASE STUDIES PAGE - WITH IMPROVED BACK BUTTON ========== -->
+    <div id="detailed-case-studies" class="case-studies-page">
+        <div class="case-studies-container">
+            <div class="case-header">
+                <h2><i class="fas fa-book-open" style="color: var(--ar-teal);"></i> detailed case studies</h2>
+                <a href="#" class="close-case"><i class="fas fa-home"></i></a>
+            </div>
+            <p style="font-size: 1.2rem; margin-bottom: 32px; color: var(--navy); border-left: 5px solid var(--admin-gold); padding-left: 20px;">
+                <i class="fas fa-graduation-cap"></i> Sanrakshan in action — real-world deployments, challenges & impact
+            </p>
+            
+            <!-- CASE STUDY 1: Karnataka GIS Dashboard -->
+            <div class="detailed-case-card">
+                <h3><i class="fas fa-map-marked-alt"></i> Case Study 1: Karnataka School Safety GIS Command Center</h3>
+                <div class="case-section">
+                    <h4><i class="fas fa-building"></i> Scenario</h4>
+                    <p>The Department of School Education and Literacy (DSEL) in Karnataka is responsible for the safety of over 48,000 schools across 31 districts. In a state with diverse geography—from the coastal floods of Udupi to the landslide-prone hills of Kodagu—centralized oversight is a massive challenge.</p>
+                </div>
+                <div class="case-section">
+                    <h4><i class="fas fa-exclamation-triangle" style="color: var(--alert-red);"></i> The Problem: "The Visibility Gap"</h4>
+                    <ul>
+                        <li><strong>Static Monitoring:</strong> Traditional safety audits are paper-based and conducted annually at best, meaning the government is often working with data that is 6–12 months out of date.</li>
+                        <li><strong>Infrastructure Blind Spots:</strong> Schools in remote or "aspirational" districts often fall through the cracks of manual reporting, leaving structural vulnerabilities unnoticed.</li>
+                        <li><strong>Resource Misallocation:</strong> Without live data, emergency funds are often distributed equally rather than being prioritized for "High Risk" schools.</li>
+                    </ul>
+                </div>
+                <div class="case-section">
+                    <h4><i class="fas fa-lightbulb"></i> The Sanrakshan Solution: "K-Safe" Dashboard</h4>
+                    <ul>
+                        <li><strong>GIS Integration:</strong> Every school is a geolocated, pulsing dot on a Karnataka state map, color-coded based on a live Preparedness Score (Green for compliant, Red for high-risk).</li>
+                        <li><strong>Dynamic Checklist Sync:</strong> When a school principal completes a safety checklist in the mobile app, the dashboard updates in real-time to reflect new fire extinguisher expiry dates or completed drills.</li>
+                        <li><strong>Environmental Overlays:</strong> Officials can overlay live weather data and flood-susceptibility maps over school locations to predict which "Red" schools are in the immediate path of danger.</li>
+                    </ul>
+                </div>
+                <div class="case-section">
+                    <h4><i class="fas fa-chart-line"></i> The Impact: Proactive Governance</h4>
+                    <ul>
+                        <li><strong>Targeted Interventions:</strong> DSEL can identify a high-risk school in Chikkamagaluru and dispatch a safety team weeks before the monsoon season begins.</li>
+                        <li><strong>Precise Rescue:</strong> Responders see the exact room-by-room layout of a school during an SOS.</li>
+                        <li><strong>Accountability:</strong> The system creates a digital trail, ensuring that mandatory safety protocols are not just "on paper" but are actively managed.</li>
+                    </ul>
+                </div>
+                <span class="impact-badge"><i class="fas fa-check-circle"></i> 48,000+ schools · Real-time GIS · Proactive aid</span>
+            </div>
+            
+            <!-- CASE STUDY 2: Earthquake Safety & AR Drill -->
+            <div class="detailed-case-card">
+                <h3><i class="fas fa-vr-cardboard"></i> Case Study 2: Earthquake Safety & The AR Drill</h3>
+                <div class="case-section">
+                    <h4><i class="fas fa-building"></i> Scenario</h4>
+                    <p>A 6.5 magnitude earthquake strikes a multi-story urban school during peak classroom hours. Panic ensues as dust fills the air and structural cracks begin to appear.</p>
+                </div>
+                <div class="case-section">
+                    <h4><i class="fas fa-exclamation-triangle" style="color: var(--alert-red);"></i> The Problem: "Cognitive Paralysis"</h4>
+                    <ul>
+                        <li><strong>High-Stress Failures:</strong> Under intense fear, the human brain suffers from "cognitive tunneling," making it nearly impossible to read complex 2D evacuation diagrams or remember exit locations.</li>
+                        <li><strong>Static Signage Flaws:</strong> Traditional "Exit" signs may be obscured by dust or smoke, and fixed maps cannot account for halls blocked by fallen debris.</li>
+                    </ul>
+                </div>
+                <div class="case-section">
+                    <h4><i class="fas fa-lightbulb"></i> The Sanrakshan Solution: Augmented Reality Navigation</h4>
+                    <ul>
+                        <li><strong>Spatial "Life Line":</strong> Students open the app and point their camera at the floor. The app uses the phone's gyroscope and accelerometer to overlay a glowing 3D green path on the physical floor.</li>
+                        <li><strong>Real-time Rerouting:</strong> The AR system guides students away from "No-Go" zones (like elevators or glass-heavy areas) toward the nearest structurally sound assembly point.</li>
+                    </ul>
+                </div>
+                <div class="case-section">
+                    <h4><i class="fas fa-chart-line"></i> The Impact: Faster Evacuation</h4>
+                    <ul>
+                        <li><strong>Reduced Decision Time:</strong> By simplifying the exit process to a "follow the line" task, the app reduces the time wasted in indecision.</li>
+                        <li><strong>32% Efficiency Gain:</strong> Research suggests that AR-guided navigation can reduce total evacuation time by over 30% compared to traditional signage.</li>
+                    </ul>
+                </div>
+                <span class="impact-badge"><i class="fas fa-clock"></i> 32% faster evacuation · Cognitive load eliminated</span>
+            </div>
+            
+            <!-- CASE STUDY 3: Flood Readiness & Offline Access -->
+            <div class="detailed-case-card">
+                <h3><i class="fas fa-water"></i> Case Study 3: Flood Readiness & Offline Access</h3>
+                <div class="case-section">
+                    <h4><i class="fas fa-building"></i> Scenario</h4>
+                    <p>A flash flood hits a rural school in the Krishna River basin. Within minutes, the local power grid fails and the nearest cellular tower is disabled, leaving the area with zero internet or phone signal.</p>
+                </div>
+                <div class="case-section">
+                    <h4><i class="fas fa-exclamation-triangle" style="color: var(--alert-red);"></i> The Problem: "The Digital Blackout"</h4>
+                    <ul>
+                        <li><strong>Cloud Dependency:</strong> Most modern emergency apps rely on server pings. When the internet goes down, these apps become "bricks," leaving users without maps or contacts.</li>
+                        <li><strong>Critical Timing:</strong> In a flood, water levels rise in minutes. Students need immediate access to high-ground assembly points without waiting for a signal to return.</li>
+                    </ul>
+                </div>
+                <div class="case-section">
+                    <h4><i class="fas fa-lightbulb"></i> The Sanrakshan Solution: Offline-First Architecture</h4>
+                    <ul>
+                        <li><strong>Immediate Synchronization:</strong> Upon installation, the app automatically downloads and localizes the school's floor plans, emergency siren triggers, and first-aid manuals to the device's internal storage.</li>
+                        <li><strong>Local Positioning:</strong> The AR features are programmed to run using local sensors, ensuring that navigation works even if GPS and Wi-Fi are unavailable.</li>
+                    </ul>
+                </div>
+                <div class="case-section">
+                    <h4><i class="fas fa-chart-line"></i> The Impact: Resilience in Isolation</h4>
+                    <ul>
+                        <li><strong>Zero-Signal Reliability:</strong> Students can navigate to a pre-designated rooftop or high ground using cached 3D maps.</li>
+                        <li><strong>Digital Survival Kit:</strong> The phone remains a functional guide for first aid and emergency frequencies, ensuring the user is never truly "alone" in a disaster.</li>
+                    </ul>
+                </div>
+                <span class="impact-badge"><i class="fas fa-database"></i> 30% faster response · Offline-first · Zero-signal</span>
+            </div>
+            
+            <!-- CASE STUDY 4: Gamified Learning -->
+            <div class="detailed-case-card">
+                <h3><i class="fas fa-gamepad"></i> Case Study 4: Gamified Learning for Public Awareness</h3>
+                <div class="case-section">
+                    <h4><i class="fas fa-building"></i> Scenario</h4>
+                    <p>A school in the Western Ghats schedules its annual disaster seminar. Students are visibly disengaged, treating the PowerPoint presentation as a "free period" rather than a life-saving lesson.</p>
+                </div>
+                <div class="case-section">
+                    <h4><i class="fas fa-exclamation-triangle" style="color: var(--alert-red);"></i> The Problem: "Passive Learning Gap"</h4>
+                    <ul>
+                        <li><strong>Low Retention:</strong> Passive learning leads to poor information recall. During a real crisis, students often forget the "Dos and Don'ts" because they have only heard them, never practiced them.</li>
+                        <li><strong>Lack of Muscle Memory:</strong> Survival techniques like "Drop, Cover, and Hold On" require physical repetition to become an instinctive reaction.</li>
+                    </ul>
+                </div>
+                <div class="case-section">
+                    <h4><i class="fas fa-lightbulb"></i> The Sanrakshan Solution: "Escape Your School" Simulation</h4>
+                    <ul>
+                        <li><strong>Interactive Drills:</strong> The app features a gamified learning module where students must "escape" their school during different disasters (floods, fires, earthquakes) under a timer.</li>
+                        <li><strong>Decision-Based Scoring:</strong> Students earn points for making correct safety choices—such as taking the stairs instead of the elevator or correctly identifying items for a "Go-Bag".</li>
+                    </ul>
+                </div>
+                <div class="case-section">
+                    <h4><i class="fas fa-chart-line"></i> The Impact: Instinctive Reactions</h4>
+                    <ul>
+                        <li><strong>High Engagement:</strong> Gamification increases the frequency of practice. Students play to beat high scores, inadvertently reinforcing safety protocols.</li>
+                        <li><strong>Muscle Memory:</strong> Through repeated virtual simulations, students develop the instinct to react correctly in seconds during a real emergency.</li>
+                    </ul>
+                </div>
+                <span class="impact-badge"><i class="fas fa-trophy"></i> 90% retention · Muscle memory · 10x engagement</span>
+            </div>
+            
+            <!-- CASE STUDY 5: Golden Hour & Mass Alert SOS -->
+            <div class="detailed-case-card">
+                <h3><i class="fas fa-bell"></i> Case Study 5: The "Golden Hour" & Mass Alert SOS</h3>
+                <div class="case-section">
+                    <h4><i class="fas fa-building"></i> Scenario</h4>
+                    <p>An afternoon shift in a crowded school is interrupted by a localized gas leak or structural sound. An immediate, school-wide evacuation is required.</p>
+                </div>
+                <div class="case-section">
+                    <h4><i class="fas fa-exclamation-triangle" style="color: var(--alert-red);"></i> The Problem: "The Communication Lag"</h4>
+                    <ul>
+                        <li><strong>Manual Delays:</strong> Relying on physical bells or a teacher running between floors can take 5–10 minutes, wasting the critical "Golden Hour" of response.</li>
+                        <li><strong>Unclear Directions:</strong> Shouted instructions are often lost in the noise, leading to confusion and disorganized movement.</li>
+                    </ul>
+                </div>
+                <div class="case-section">
+                    <h4><i class="fas fa-lightbulb"></i> The Sanrakshan Solution: Administrative Mass Alert</h4>
+                    <ul>
+                        <li><strong>Instant Trigger:</strong> An admin triggers a "Mass Alert" from their login. This immediately activates a high-decibel siren on every connected student's device and pushes a full-screen notification with specific instructions.</li>
+                        <li><strong>Precise Data Packet:</strong> The SOS automatically transmits the school's unique ID and GPS coordinates to the state dashboard.</li>
+                    </ul>
+                </div>
+                <div class="case-section">
+                    <h4><i class="fas fa-chart-line"></i> The Impact: Coordinated Response</h4>
+                    <ul>
+                        <li><strong>Instant Mobilization:</strong> The entire school is alerted within 3 seconds, regardless of which wing they are in.</li>
+                        <li><strong>Rescuer Precision:</strong> Fire and medical teams receive the alert with the school's exact layout attached, allowing them to enter through the most efficient doorway.</li>
+                    </ul>
+                </div>
+                <span class="impact-badge"><i class="fas fa-shield-alt"></i> 3s mobilization · Golden hour protection</span>
+            </div>
+            
+            <!-- CASE STUDY 6: Fire Emergency & Rapid Response -->
+            <div class="detailed-case-card">
+                <h3><i class="fas fa-fire-extinguisher"></i> Case Study 6: Fire Emergency & The "Rapid Response" Module</h3>
+                <div class="case-section">
+                    <h4><i class="fas fa-building"></i> Scenario</h4>
+                    <p>A short circuit in a secondary wing laboratory causes a fire. Smoke begins to fill the corridors, obscuring vision and creating panic.</p>
+                </div>
+                <div class="case-section">
+                    <h4><i class="fas fa-exclamation-triangle" style="color: var(--alert-red);"></i> The Problem: "Visibility and Navigation"</h4>
+                    <ul>
+                        <li><strong>Unheard Alarms:</strong> In large schools, a fire in one wing might not be immediately detected in another.</li>
+                        <li><strong>Smoke Disorientation:</strong> Students often stand up to run, inhaling dangerous smoke, or lose their way in the haze.</li>
+                    </ul>
+                </div>
+                <div class="case-section">
+                    <h4><i class="fas fa-lightbulb"></i> The Sanrakshan Solution: Guided Fire Response</h4>
+                    <ul>
+                        <li><strong>Smart Evacuation:</strong> The app identifies the fire's origin and calculates the safest "smoke-free" route, often directing students to stay low.</li>
+                        <li><strong>Digital Checklists:</strong> It provides immediate, bite-sized instructions: "Stay low to the ground," "Cover your nose," and "Check doors for heat before opening".</li>
+                        <li><strong>Resource Awareness:</strong> The app overlays the location of the nearest working fire extinguisher.</li>
+                    </ul>
+                </div>
+                <div class="case-section">
+                    <h4><i class="fas fa-chart-line"></i> The Impact: Survivability</h4>
+                    <ul>
+                        <li><strong>Time Savings:</strong> Data shows guided digital drills can reduce fire evacuation times by nearly 30 seconds (e.g., from 80s to 54s).</li>
+                        <li><strong>Government Awareness:</strong> The fire alert is immediately mirrored on the State-Level Dashboard, allowing officials to coordinate with the nearest fire station instantly.</li>
+                    </ul>
+                </div>
+                <span class="impact-badge"><i class="fas fa-stopwatch"></i> 26s faster · Smoke-free AR route · Extinguisher finder</span>
+            </div>
+            
+            <!-- CASE STUDY 7: Offline Mode & Infrastructure Resilience -->
+            <div class="detailed-case-card">
+                <h3><i class="fas fa-satellite-dish"></i> Case Study 7: Offline Mode & Infrastructure Resilience</h3>
+                <div class="case-section">
+                    <h4><i class="fas fa-building"></i> Scenario</h4>
+                    <p>A massive disaster—such as a catastrophic earthquake or a severe cyclone—strikes a region in Karnataka, causing a total collapse of the regional power grid and high-speed data infrastructure for several consecutive days.</p>
+                </div>
+                <div class="case-section">
+                    <h4><i class="fas fa-exclamation-triangle" style="color: var(--alert-red);"></i> The Problem: "The Digital Blackout & Information Void"</h4>
+                    <ul>
+                        <li><strong>Server Dependency:</strong> Most modern safety apps require constant "server pings" or API calls to function. Without power to local data centers or cell towers, these apps "freeze" and become useless.</li>
+                        <li><strong>Lost Guidance:</strong> During the critical days following a disaster, survivors still need to locate shelters and perform basic first aid. Without internet access, they have no way to "look up" this information.</li>
+                        <li><strong>Battery Anxiety:</strong> High-energy apps drain phone batteries quickly, which is a major risk when there is no way to recharge for several days.</li>
+                    </ul>
+                </div>
+                <div class="case-section">
+                    <h4><i class="fas fa-lightbulb"></i> The Sanrakshan Solution: "Offline-First" Survival Architecture</h4>
+                    <ul>
+                        <li><strong>Edge-Stored Data (Local DB):</strong> Immediately upon installation, the app triggers a high-priority download of the school's specific "Digital Survival Kit". This includes 3D floor plans, the "Standard Manual" of first-aid protocols, and emergency contact lists, all stored in the phone's local SQL database.</li>
+                        <li><strong>Local Sensor Navigation:</strong> The AR Evacuation Drill runs without GPS or Wi-Fi, utilizing the device's internal gyroscope and accelerometer.</li>
+                        <li><strong>Battery-Optimized Engine:</strong> Specialized "Low-Power Mode" reduces background processes and screen brightness while in AR view.</li>
+                        <li><strong>Offline SOS Fail-safe:</strong> If internet is down, SOS switches to a pre-coded SMS protocol using low-frequency cellular bands.</li>
+                    </ul>
+                </div>
+                <div class="case-section">
+                    <h4><i class="fas fa-chart-line"></i> The Impact: Sustained Safety & Resilience</h4>
+                    <ul>
+                        <li><strong>30% Faster Response:</strong> Offline-enabled systems reduce emergency response times in isolated areas by up to 30%.</li>
+                        <li><strong>Zero-Signal Utility:</strong> Users in cut-off districts retain a functional "safety hub" with step-by-step guidance on disaster recovery, shelter locations, and medical aid.</li>
+                        <li><strong>Extended Functionality:</strong> Unlike cloud-based tools that fail instantly, Sanrakshan remains a life-saving resource for the entire crisis.</li>
+                    </ul>
+                </div>
+                <span class="impact-badge"><i class="fas fa-battery-quarter"></i> Low-power mode · 3D maps offline · SMS fail-safe</span>
+            </div>
+            
+            <!-- IMPROVED BACK BUTTON - Elegant and prominent -->
+            <div style="text-align: center; margin-top: 40px; margin-bottom: 20px;">
+                <a href="#" class="back-home-btn">
+                    <i class="fas fa-arrow-left"></i> BACK TO HOME
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== INTERACTIVE QUIZ PAGE - SHUFFLED QUESTIONS & OPTIONS ========== -->
+    <div id="interactive-quiz" class="quiz-page">
+        <div class="quiz-container">
+            <div class="quiz-header">
+                <h2><i class="fas fa-puzzle-piece" style="color: var(--ar-teal);"></i> disaster readiness quiz</h2>
+                <a href="#" class="close-quiz" onclick="resetQuizForm()"><i class="fas fa-home"></i></a>
+            </div>
+            
+            <div class="quiz-progress">
+                <span><i class="fas fa-question-circle"></i> 20 questions · test your survival IQ</span>
+                <span style="background: var(--admin-gold); padding: 8px 18px; border-radius: 50px;">⚡ Sanrakshan certified</span>
+            </div>
+            
+            <form id="quizForm">
+                <div class="quiz-questions-grid" id="quizQuestionsGrid">
+                    <!-- QUESTIONS WILL BE POPULATED BY JAVASCRIPT (SHUFFLED) -->
+                </div>
+                
+                <button type="button" id="submit20QuizBtn" class="btn-quiz-submit-large">
+                    <i class="fas fa-check-circle"></i> SUBMIT ANSWERS
+                </button>
+                
+                <div id="quiz20Feedback" class="quiz-feedback-large" style="display: none;"></div>
+                
+                <!-- BACK TO HOME BUTTON INSIDE QUIZ PAGE -->
+                <div class="quiz-back-home">
+                    <a href="#" class="back-home-btn" onclick="resetQuizForm()">
+                        <i class="fas fa-home"></i> BACK TO HOME
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MAIN LANDING PAGE CONTAINER -->
+    <div class="container">
+        <!-- HEADER -->
+        <div class="navbar">
+            <div class="logo-area">
+                <div class="logo-frame">
+                    <img class="custom-logo-img" src="Sanrakshan logo.jpeg" alt="Sanrakshan official logo" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'fas fa-shield-halos\' style=\'font-size: 3rem; color: var(--ar-teal);\'></i>';">
+                </div>
+                <div class="logo-text">
+                    <h1>SANRAKSHAN</h1>
+                    <div class="tagline">Prepared today, Protected tomorrow</div>
+                </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+                <button class="theme-toggle" id="theme-toggle-btn" onclick="toggleTheme()">
+                    <i class="fas fa-moon" id="theme-icon"></i>
+                    <span id="theme-text">Dark</span>
+                </button>
+                <div class="login-section">
+                    <a href="#user-login-page" class="login-btn user-login">
+                        <i class="fas fa-user"></i> User Login
+                    </a>
+                    <a href="#admin-login-page" class="login-btn admin-login">
+                        <i class="fas fa-shield-halos"></i> Admin Login
+                    </a>
+                </div>
+                
+                <div class="sos-mini">
+                    <i class="fas fa-triangle-exclamation"></i>
+                    <span style="font-weight:600;">24/7</span>
+                    <button class="btn-sos-small sos-click"><i class="fas fa-hand-pointer"></i> SOS</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hero Section -->
+        <div class="hero">
+            <div class="hero-content">
+                <span class="hero-badge"><i class="fas fa-robot" style="margin-right: 8px;"></i> NEXT-GEN ALERTNESS</span>
+                <h2><i class="fas fa-cube"></i> AR emergency navigation & awareness suite</h2>
+                <div class="ar-package">
+                    <div class="ar-icon">
+                        <i class="fas fa-glasses"></i>
+                    </div>
+                    <div class="ar-desc">
+                        <h3>AR NAV + AWARE</h3>
+                        <p>Heads-up evacuation routes · Hazard overlays · Real-time 3D guidance</p>
+                        <div class="feature-tag">
+                            <span><i class="fas fa-location-arrow"></i> indoor/outdoor</span>
+                            <span><i class="fas fa-cloud-sun"></i> dynamic risk</span>
+                            <span><i class="fas fa-vr-cardboard"></i> smart compass</span>
+                        </div>
+                    </div>
+                </div>
+                <p style="font-size:1.15rem; margin-top: 12px; color: #1d4357;"><i class="fas fa-circle-check" style="color: #1e791e;"></i> Integrated awareness package – voice + visual cues</p>
+            </div>
+            <div style="flex: 0.6; min-width: 200px; background: radial-gradient(circle at 30% 30%, #b8e2f0, #a0d4e6); padding: 20px; border-radius: 40px; display: flex; justify-content: center; align-items: center; border: 6px solid white;">
+                <i class="fas fa-map-location-dot" style="font-size: 9rem; color: #035c7c; text-shadow: 8px 8px 0 #002b3b40;"></i>
+            </div>
+        </div>
+
+        <!-- Auto-Admin Card -->
+        <div class="admin-approval-card">
+            <div class="admin-left">
+                <div class="admin-icon">
+                    <img class="admin-logo-img" src="auto admin.png" alt="Auto-Admin emblem" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'fas fa-robot\' style=\'font-size: 2.5rem; color: var(--admin-gold);\'></i>';">
+                </div>
+                <div class="admin-text">
+                    <h4><i class="fas fa-robot" style="color: #a47c1d;"></i> Auto‑Admin · Approval Engine</h4>
+                    <p>Disaster alerts verified & approved by AI · No human delay</p>
+                </div>
+            </div>
+            <div class="automated-badge">
+                <i class="fas fa-bolt"></i> 24/7 automated moderation
+                <span style="background: #f3c623; color: black; margin-left: 10px; padding: 3px 12px; border-radius: 30px;">ACTIVE</span>
+            </div>
+        </div>
+
+        <!-- Alertness Feed -->
+        <div class="alertness-feed">
+            <div class="feed-header">
+                <h3><i class="fas fa-bell" style="color: var(--alert-red);"></i> disaster alertness · auto‑approved</h3>
+                <span class="automated-tag"><i class="fas fa-clock"></i> instant AI approval</span>
+            </div>
+            <div class="alert-card approved">
+                <div class="alert-info">
+                    <div class="alert-icon"><i class="fas fa-wind" style="color: #4b687c;"></i></div>
+                    <div class="alert-meta">
+                        <h4>Cyclone warning · Bay of Bengal <span style="font-size:0.8rem; background: #d9eaf5; padding: 4px 8px; border-radius: 20px; margin-left: 8px;">APPROVED BY AUTO-ADMIN</span></h4>
+                        <p>High-velocity winds · AR evacuation routes activated · 12:24 UTC</p>
+                    </div>
+                </div>
+                <div class="approval-stamp"><i class="fas fa-circle-check"></i> auto‑verified</div>
+            </div>
+            <div class="alert-card approved">
+                <div class="alert-info">
+                    <div class="alert-icon"><i class="fas fa-water" style="color: #0f6f6f;"></i></div>
+                    <div class="alert-meta">
+                        <h4>Flash flood · urban zone 7 <span style="font-size:0.8rem; background: #d9eaf5; padding: 4px 8px; border-radius: 20px;">ADMIN AI</span></h4>
+                        <p>Rising water levels · AR low‑lying route avoidance · 13:01 UTC</p>
+                    </div>
+                </div>
+                <div class="approval-stamp"><i class="fas fa-circle-check"></i> confidence 98%</div>
+            </div>
+            <div class="alert-card approved">
+                <div class="alert-info">
+                    <div class="alert-icon"><i class="fas fa-house-chimney-crack" style="color: #9d6b43;"></i></div>
+                    <div class="alert-meta">
+                        <h4>Seismic tremor · North ridge <span style="font-size:0.8rem; background: #d9eaf5; padding: 4px 8px; border-radius: 20px;">AUTO-ADMIN</span></h4>
+                        <p>Magnitude 4.2 · AR safe zone projection · 09:47 UTC</p>
+                    </div>
+                </div>
+                <div class="approval-stamp"><i class="fas fa-circle-check"></i> approved</div>
+            </div>
+            <div class="demo-note">
+                <i class="fas fa-info-circle"></i> All disasters above are pre‑approved by automated admin (simulated). In production, alerts are verified instantly.
+            </div>
+        </div>
+
+        <!-- SOS BUTTON -->
+        <div class="sos-section">
+            <div class="sos-card">
+                <button id="sosBigButton" class="btn-sos-main sos-click">
+                    <i class="fas fa-circle-exclamation"></i> SOS
+                    <i class="fas fa-chevron-right" style="font-size: 1.8rem;"></i>
+                </button>
+                <div class="sos-warning">
+                    <span class="dev-status"><i class="fas fa-hard-hat"></i> UNDER DEVELOPMENT</span>
+                    <p style="margin-top: 8px; font-size: 0.95rem;">Tap for emergency – module in active build</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- EDUCATIONAL PREPAREDNESS - EXACTLY AS SCREENSHOT -->
+        <div class="edu-preparedness">
+            <div class="edu-left">
+                <i class="fas fa-graduation-cap edu-icon"></i>
+                <div class="edu-text">
+                    <h4>educational preparedness</h4>
+                    <p>Interactive AR tutorials: earthquake drills, fire escape, flood safety — awareness package included.</p>
+                    
+                </div>
+            </div>
+            <div class="edu-actions">
+                <a href="#detailed-case-studies" class="edu-btn case">
+                    <i class="fas fa-book-open"></i> Case Studies
+                </a>
+                <a href="#interactive-quiz" class="edu-btn quiz" onclick="resetQuizForm()">
+                    <i class="fas fa-puzzle-piece"></i> Interactive Quiz
+                </a>
+            </div>
+        </div>
+
+        <footer>
+            <p><i class="fas fa-shield" style="color: #b31c1c;"></i> SANRAKSHAN – ALERTNESS & AR • automated admin approval active • <span style="font-weight: bold;">SOS under development</span></p>
+            <p style="margin-top: 12px;">“Prepared today, Protected tomorrow” — official tagline</p>
+        </footer>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        (function() {
+            "use strict";
+            
+            // ========== ORIGINAL QUIZ DATA ==========
+            const originalQuizQuestions = [
+                {
+                    id: 1,
+                    question: "During an earthquake, what is the correct action?",
+                    options: [
+                        "Run outside immediately",
+                        "Drop, Cover, and Hold On",
+                        "Stand near windows",
+                        "Use the elevator"
+                    ],
+                    correct: 1 // index 1 = Drop, Cover, and Hold On
+                },
+                {
+                    id: 2,
+                    question: "If trapped under debris, what should you do?",
+                    options: [
+                        "Light a match",
+                        "Shout continuously until exhausted",
+                        "Tap on a pipe or wall for location",
+                        "Kick debris loudly"
+                    ],
+                    correct: 2
+                },
+                {
+                    id: 3,
+                    question: "What's the first step in a fire emergency?",
+                    options: [
+                        "Open all windows",
+                        "Gather belongings",
+                        "Stay low and check for smoke",
+                        "Run through flames"
+                    ],
+                    correct: 2
+                },
+                {
+                    id: 4,
+                    question: "What is the recommended 'Go-Bag' item during floods?",
+                    options: [
+                        "Heavy furniture",
+                        "Portable radio & water",
+                        "Glass bottles",
+                        "All electrical appliances"
+                    ],
+                    correct: 1
+                },
+                {
+                    id: 5,
+                    question: "How can AR navigation improve evacuation?",
+                    options: [
+                        "It shows 2D paper maps",
+                        "Overlays 3D path on real floor",
+                        "Only works with internet",
+                        "Requires professional training"
+                    ],
+                    correct: 1
+                },
+                {
+                    id: 6,
+                    question: "What does 'Drop, Cover, Hold On' protect you from?",
+                    options: [
+                        "Flood water",
+                        "Fire smoke",
+                        "Falling objects during earthquake",
+                        "Cyclone winds"
+                    ],
+                    correct: 2
+                },
+                {
+                    id: 7,
+                    question: "In a cyclone, the safest place is:",
+                    options: [
+                        "Near windows",
+                        "Outside under trees",
+                        "Small interior room, no windows",
+                        "On the rooftop"
+                    ],
+                    correct: 2
+                },
+                {
+                    id: 8,
+                    question: "What should you do first if your clothes catch fire?",
+                    options: [
+                        "Stop, Drop, and Roll",
+                        "Run to get water",
+                        "Remove the clothing",
+                        "Wave arms to put out fire"
+                    ],
+                    correct: 0
+                },
+                {
+                    id: 9,
+                    question: "What is the golden hour in emergency response?",
+                    options: [
+                        "Critical first 60 minutes for survival",
+                        "The hour before disaster",
+                        "Time to call family",
+                        "Evacuation drill duration"
+                    ],
+                    correct: 0
+                },
+                {
+                    id: 10,
+                    question: "Which of these is a sign of a flash flood?",
+                    options: [
+                        "Clear blue sky",
+                        "Rapidly rising water",
+                        "Calm river",
+                        "Light drizzle"
+                    ],
+                    correct: 1
+                },
+                {
+                    id: 11,
+                    question: "During a landslide, you should:",
+                    options: [
+                        "Move to high ground, away from slope",
+                        "Stay in the valley",
+                        "Watch from close range",
+                        "Drive through mud"
+                    ],
+                    correct: 0
+                },
+                {
+                    id: 12,
+                    question: "What is the purpose of a preparedness score?",
+                    options: [
+                        "Identify high-risk schools for aid",
+                        "Rank student performance",
+                        "Measure internet speed",
+                        "Count number of classrooms"
+                    ],
+                    correct: 0
+                },
+                {
+                    id: 13,
+                    question: "How does offline AR navigation work without internet?",
+                    options: [
+                        "Uses phone's gyroscope & pre-cached maps",
+                        "Cannot work without internet",
+                        "Requires satellite phone",
+                        "Only works outdoors"
+                    ],
+                    correct: 0
+                },
+                {
+                    id: 14,
+                    question: "What is a 'Digital Survival Kit'?",
+                    options: [
+                        "Pre-downloaded maps, first aid, contacts",
+                        "A USB drive with movies",
+                        "Online backup service",
+                        "Social media group"
+                    ],
+                    correct: 0
+                },
+                {
+                    id: 15,
+                    question: "During a gas leak, what NOT to do?",
+                    options: [
+                        "Evacuate immediately",
+                        "Turn off gas if safe",
+                        "Switch on lights or use matches",
+                        "Open doors for ventilation"
+                    ],
+                    correct: 2
+                },
+                {
+                    id: 16,
+                    question: "What does 'cognitive tunneling' mean in disasters?",
+                    options: [
+                        "Brain freezes, can't read maps/exits",
+                        "Building collapse",
+                        "Underground evacuation",
+                        "Communication delay"
+                    ],
+                    correct: 0
+                },
+                {
+                    id: 17,
+                    question: "How many schools does Karnataka DSEL monitor?",
+                    options: [
+                        "48,000+",
+                        "10,000",
+                        "100,000",
+                        "5,000"
+                    ],
+                    correct: 0
+                },
+                {
+                    id: 18,
+                    question: "What is the main advantage of gamified learning?",
+                    options: [
+                        "Builds muscle memory via repetition",
+                        "Replaces all teachers",
+                        "Only for entertainment",
+                        "Requires internet always"
+                    ],
+                    correct: 0
+                },
+                {
+                    id: 19,
+                    question: "What does a red dot on the K-Safe GIS map indicate?",
+                    options: [
+                        "High-risk school, low preparedness",
+                        "School is closed",
+                        "Holiday schedule",
+                        "New building"
+                    ],
+                    correct: 0
+                },
+                {
+                    id: 20,
+                    question: "Sanrakshan's auto-admin approval engine does what?",
+                    options: [
+                        "Instantly verifies disaster alerts by AI",
+                        "Delays alerts for human review",
+                        "Sends physical letters",
+                        "Only works in offices"
+                    ],
+                    correct: 0
+                }
+            ];
+
+            // Current quiz questions (will be shuffled)
+            let currentQuizQuestions = [];
+
+            // ========== SHUFFLE ARRAY FUNCTION ==========
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+
+            // ========== SHUFFLE OPTIONS FUNCTION ==========
+            function shuffleOptions(question) {
+                // Create array of option objects with text and isCorrect flag
+                const optionObjects = question.options.map((text, index) => ({
+                    text: text,
+                    isCorrect: index === question.correct
+                }));
+                
+                // Shuffle the options
+                const shuffled = shuffleArray([...optionObjects]);
+                
+                // Find new correct index
+                const newCorrectIndex = shuffled.findIndex(opt => opt.isCorrect);
+                
+                return {
+                    options: shuffled.map(opt => opt.text),
+                    correct: newCorrectIndex
+                };
+            }
+
+            // ========== SHUFFLE ALL QUESTIONS AND OPTIONS ==========
+            function shuffleAllQuestions() {
+                // Deep copy original questions
+                currentQuizQuestions = originalQuizQuestions.map(q => ({
+                    ...q,
+                    options: [...q.options]
+                }));
+                
+                // Shuffle question order
+                currentQuizQuestions = shuffleArray(currentQuizQuestions);
+                
+                // Shuffle options for each question
+                currentQuizQuestions = currentQuizQuestions.map(q => {
+                    const shuffled = shuffleOptions(q);
+                    return {
+                        ...q,
+                        options: shuffled.options,
+                        correct: shuffled.correct
+                    };
+                });
+                
+                return currentQuizQuestions;
+            }
+
+            // ========== RESET QUIZ FUNCTION ==========
+            window.resetQuizForm = function() {
+                // Shuffle questions and options for fresh quiz
+                shuffleAllQuestions();
+                
+                setTimeout(() => {
+                    renderQuizQuestions();
+                    
+                    // Reset feedback display
+                    const feedbackDiv = document.getElementById('quiz20Feedback');
+                    if (feedbackDiv) {
+                        feedbackDiv.style.display = 'none';
+                        feedbackDiv.innerHTML = '';
+                    }
+                    
+                    // Remove any submission flags
+                    const quizForm = document.getElementById('quizForm');
+                    if (quizForm) {
+                        quizForm.dataset.submitted = 'false';
+                    }
+                    
+                    // Re-enable all radio buttons
+                    document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                        radio.disabled = false;
+                        radio.checked = false;
+                    });
+                }, 10);
+            };
+
+            // ========== RENDER QUIZ QUESTIONS ==========
+            function renderQuizQuestions() {
+                const grid = document.getElementById('quizQuestionsGrid');
+                if (!grid) return;
+                
+                let html = '';
+                
+                currentQuizQuestions.forEach((q, index) => {
+                    const qNumber = index + 1;
+                    const qName = 'q' + qNumber;
+                    const qId = q.id; // Keep original ID for tracking
+                    
+                    html += `<div class="quiz-card" id="card-${qNumber}" data-qid="${qId}" data-original-index="${index}">`;
+                    html += `<p><i class="fas fa-${qNumber}"></i> ${q.question}</p>`;
+                    html += `<div class="quiz-options">`;
+                    
+                    q.options.forEach((option, optIndex) => {
+                        const optValue = optIndex === q.correct ? 'correct' : 'wrong';
+                        html += `<label class="quiz-option-item" id="opt-${qNumber}-${optIndex}" data-opt-index="${optIndex}">`;
+                        html += `<input type="radio" name="${qName}" value="${optValue}" data-correct="${q.correct}" data-opt-index="${optIndex}">`;
+                        html += `<span>${option}</span>`;
+                        html += `</label>`;
+                    });
+                    
+                    html += `</div>`;
+                    html += `</div>`;
+                });
+                
+                grid.innerHTML = html;
+                
+                // Reset submitted flag
+                const quizForm = document.getElementById('quizForm');
+                if (quizForm) {
+                    quizForm.dataset.submitted = 'false';
+                }
+            }
+
+            // ========== DISPLAY RESULTS WITH GREEN/RED INDICATORS ==========
+            function displayResultsWithIndicators() {
+                // Remove any existing result icons first
+                document.querySelectorAll('.result-icon').forEach(el => el.remove());
+                
+                // Reset card classes
+                document.querySelectorAll('.quiz-card').forEach(card => {
+                    card.classList.remove('submitted-correct', 'submitted-wrong');
+                });
+                
+                let score = 0;
+                
+                // Loop through current displayed questions
+                document.querySelectorAll('.quiz-card').forEach((card, index) => {
+                    const qNumber = index + 1;
+                    const qName = 'q' + qNumber;
+                    const radios = document.getElementsByName(qName);
+                    const questionData = currentQuizQuestions[index];
+                    
+                    if (!questionData) return;
+                    
+                    let selectedIndex = -1;
+                    let isCorrect = false;
+                    
+                    for (let i = 0; i < radios.length; i++) {
+                        if (radios[i].checked) {
+                            selectedIndex = i;
+                            isCorrect = (radios[i].value === 'correct');
+                            if (isCorrect) score++;
+                            break;
+                        }
+                    }
+                    
+                    // Add result icons and color coding
+                    if (selectedIndex !== -1) {
+                        const selectedLabel = document.getElementById(`opt-${qNumber}-${selectedIndex}`);
+                        
+                        if (selectedLabel) {
+                            // Remove any existing icons
+                            const existingIcon = selectedLabel.querySelector('.result-icon');
+                            if (existingIcon) existingIcon.remove();
+                            
+                            // Add new icon
+                            const iconSpan = document.createElement('span');
+                            iconSpan.className = `result-icon ${isCorrect ? 'correct' : 'wrong'}`;
+                            
+                            if (isCorrect) {
+                                iconSpan.innerHTML = '<i class="fas fa-check-circle"></i> Correct';
+                                if (card) card.classList.add('submitted-correct');
+                            } else {
+                                iconSpan.innerHTML = '<i class="fas fa-times-circle"></i> Incorrect';
+                                if (card) card.classList.add('submitted-wrong');
+                                
+                                // Highlight the correct answer
+                                const correctIndex = questionData.correct;
+                                const correctLabel = document.getElementById(`opt-${qNumber}-${correctIndex}`);
+                                if (correctLabel && !correctLabel.querySelector('.result-icon')) {
+                                    const correctIcon = document.createElement('span');
+                                    correctIcon.className = 'result-icon correct';
+                                    correctIcon.innerHTML = '<i class="fas fa-check-circle"></i> Correct Answer';
+                                    correctLabel.appendChild(correctIcon);
+                                }
+                            }
+                            
+                            selectedLabel.appendChild(iconSpan);
+                        }
+                    } else {
+                        // No answer selected - mark as wrong
+                        if (card) card.classList.add('submitted-wrong');
+                    }
+                });
+                
+                return score;
+            }
+
+            // ========== INITIAL SHUFFLE AND RENDER ==========
+            // First time initialization
+            shuffleAllQuestions();
+            renderQuizQuestions();
+
+            // ========== QUIZ SUBMIT HANDLER ==========
+            const submit20Btn = document.getElementById('submit20QuizBtn');
+            if (submit20Btn) {
+                submit20Btn.addEventListener('click', function() {
+                    const quizForm = document.getElementById('quizForm');
+                    
+                    // Check if already submitted
+                    if (quizForm.dataset.submitted === 'true') {
+                        alert('You have already submitted this quiz. Please close and reopen for a fresh attempt.');
+                        return;
+                    }
+                    
+                    // Check if all questions are answered
+                    let allAnswered = true;
+                    for (let i = 1; i <= 20; i++) {
+                        const radios = document.getElementsByName('q' + i);
+                        let answered = false;
+                        for (let j = 0; j < radios.length; j++) {
+                            if (radios[j].checked) {
+                                answered = true;
+                                break;
+                            }
+                        }
+                        if (!answered) {
+                            allAnswered = false;
+                            break;
+                        }
+                    }
+                    
+                    if (!allAnswered) {
+                        alert('Please answer all 20 questions before submitting.');
+                        return;
+                    }
+                    
+                    // Display results with indicators
+                    const score = displayResultsWithIndicators();
+                    
+                    const feedbackDiv = document.getElementById('quiz20Feedback');
+                    feedbackDiv.style.display = 'block';
+                    
+                    let message = '';
+                    if (score === 20) {
+                        message = '🏆 PERFECT! 20/20 — You are a disaster readiness expert!';
+                    } else if (score >= 16) {
+                        message = '🌟 EXCELLENT! Score: ' + score + '/20. Highly prepared.';
+                    } else if (score >= 12) {
+                        message = '👍 GOOD! Score: ' + score + '/20. Review case studies to improve.';
+                    } else {
+                        message = '📘 Score: ' + score + '/20. Explore detailed case studies and learn more.';
+                    }
+                    
+                    feedbackDiv.innerHTML = '<i class="fas fa-flag"></i> ' + message;
+                    feedbackDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    
+                    // Mark as submitted
+                    quizForm.dataset.submitted = 'true';
+                    
+                    // Disable all radio buttons
+                    document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                        radio.disabled = true;
+                    });
+                });
+            }
+
+            // ========== SOS BUTTON HANDLER ==========
+            const sosButtons = document.querySelectorAll('.sos-click');
+            function handleSosTap(event) {
+                event.preventDefault();
+                alert("🚨 SOS module is currently UNDER DEVELOPMENT. Emergency navigation & alert will be available soon. Stay tuned.");
+            }
+            sosButtons.forEach(btn => {
+                btn.addEventListener('click', handleSosTap);
+            });
+
+            // Old form handlers removed - now using auth.js for proper backend integration
+            
+            // ========== RESET QUIZ WHEN CLICKING ON QUIZ LINK ==========
+            const quizLink = document.querySelector('.edu-btn.quiz');
+            if (quizLink) {
+                quizLink.addEventListener('click', function(e) {
+                    setTimeout(resetQuizForm, 10);
+                });
+            }
+            
+            // Reset quiz when closing quiz page
+            const closeQuizBtn = document.querySelector('.close-quiz');
+            if (closeQuizBtn) {
+                closeQuizBtn.addEventListener('click', function() {
+                    setTimeout(resetQuizForm, 10);
+                });
+            }
+        })();
+    </script>
+
+</body>
+</html>
