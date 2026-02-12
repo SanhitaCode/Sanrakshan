@@ -1,6 +1,6 @@
 // API Configuration
-const API_BASE_URL = 'http://localhost:5000/api';
-const SOCKET_URL = 'http://localhost:5000';
+const API_BASE_URL = 'https://sanrakshan-backend.onrender.com/api';
+const SOCKET_URL = 'https://sanrakshan-backend.onrender.com/api';
 
 // API endpoints
 const API_ENDPOINTS = {
