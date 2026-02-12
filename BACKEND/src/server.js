@@ -5,6 +5,22 @@ const socketIo = require("socket.io");
 
 const app = require("./app");
 
+// Add CORS for Express routes (if not already in app.js)
+const cors = require("cors");
+app.use(cors({
+  origin: ["https://sanrakshan.netlify.app", "http://localhost:5500"],
+  credentials: true
+}));
+
+// Test endpoint
+app.get("/api/test", (req, res) => {
+  res.json({ 
+    success: true, 
+    message: "Backend is live and reachable!",
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Create HTTP server
 const server = http.createServer(app);
 
